@@ -270,3 +270,5 @@ def map_userid_2_realname(user_profile: dict, comm_dict: dict, plot=False):
         plt.title('Student based on Message sent in thread', size=20)
 
     return ac_comm_dict
+
+
