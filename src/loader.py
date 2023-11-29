@@ -21,13 +21,13 @@ class SlackDataLoader:
     '''
     Slack exported data IO class.
 
-    When you open slack exported ZIP file, each channel or direct message 
-    will have its own folder. Each folder will contain messages from the 
+    When you open slack exported ZIP file, each channel or direct message
+    will have its own folder. Each folder will contain messages from the
     conversation, organised by date in separate JSON files.
 
-    You'll see reference files for different kinds of conversations: 
+    You'll see reference files for different kinds of conversations:
     users.json files for all types of users that exist in the slack workspace
-    channels.json files for public channels, 
+    channels.json files for public channels,
 
     These files contain metadata about the conversations, including their names and IDs.
 
@@ -100,12 +100,15 @@ def slack_parser(path_channel):
         5. convert to dataframe and merge all
         6. reset the index and return dataframe
     """
-
+    print(path_channel)
     # specify path to get json files
+    # print(glob.glob(f"{path_channel}/*.json"))
     combined = []
-    for json_file in glob.glob(f"{path_channel}*.json"):
-        with open(json_file, 'r', encoding="utf8") as slack_data:
-            combined.append(slack_data)
+    for json_file in glob.glob(f"{path_channel}/*.json"):
+        slack_data = open(json_file, 'r', encoding="utf8")
+        json_slack_data = json.load(slack_data)
+        # with open(json_file, 'r', encoding="utf8") as slack_data:
+        combined.append(json_slack_data)
 
     # loop through all json files and extract required informations
     dflist = []
@@ -145,9 +148,8 @@ def slack_parser(path_channel):
                     reply_count.append(0)
                     reply_users_count.append(0)
                     tm_thread_end.append(0)
-        # important! I have converted the zip file into a dict type
-        data = dict(zip(msg_type, msg_content, sender_id, time_msg, msg_dist, time_thread_st,
-                        reply_count, reply_users_count, reply_users, tm_thread_end))
+        data = zip(msg_type, msg_content, sender_id, time_msg, msg_dist, time_thread_st,
+                   reply_count, reply_users_count, reply_users, tm_thread_end)
         columns = ['msg_type', 'msg_content', 'sender_name', 'msg_sent_time', 'msg_dist_type',
                    'time_thread_start', 'reply_count', 'reply_users_count', 'reply_users', 'tm_thread_end']
 
@@ -160,6 +162,10 @@ def slack_parser(path_channel):
     dfall = dfall.reset_index(drop=True)
 
     return dfall
+
+
+# get the current working directory and append "anonymized to it then called the slack_parser" function with that path
+# slack_parser("anonymized/all-week9")
 
 
 def parse_slack_reaction(path, channel):
