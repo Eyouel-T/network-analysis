@@ -109,7 +109,7 @@ def slack_parser(path_channel):
         json_slack_data = json.load(slack_data)
         # with open(json_file, 'r', encoding="utf8") as slack_data:
         combined.append(json_slack_data)
-
+    print(f"{combined[0][0].get('user')} is the first element in the json")
     # loop through all json files and extract required informations
     dflist = []
     for slack_data in combined:
