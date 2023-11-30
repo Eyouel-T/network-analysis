@@ -100,7 +100,8 @@ def slack_parser(path_channel):
         5. convert to dataframe and merge all
         6. reset the index and return dataframe
     """
-    print(path_channel)
+
+    print(f"slack_parser called with argument: {path_channel} ")
     # specify path to get json files
     # print(glob.glob(f"{path_channel}/*.json"))
     combined = []
@@ -109,7 +110,7 @@ def slack_parser(path_channel):
         json_slack_data = json.load(slack_data)
         # with open(json_file, 'r', encoding="utf8") as slack_data:
         combined.append(json_slack_data)
-    print(f"{combined[0][0].get('user')} is the first element in the json")
+    # print(f"{combined[0][0].get('user')} is the first element in the json")
     # loop through all json files and extract required informations
     dflist = []
     for slack_data in combined:
@@ -160,12 +161,39 @@ def slack_parser(path_channel):
     dfall = pd.concat(dflist, ignore_index=True)
     dfall['channel'] = path_channel.split('/')[-1].split('.')[0]
     dfall = dfall.reset_index(drop=True)
-
     return dfall
 
 
-# get the current working directory and append "anonymized to it then called the slack_parser" function with that path
-# slack_parser("anonymized/all-week9")
+# add all of the messages in all of the folders in one big dataframe
+def all_messages():
+    print("all messages called")
+    all_folders = ["../anonymized/ab_test-group", "../anonymized/all-de-week12"
+                   , "../anonymized/all-career-exercises", "../anonymized/all-community-building"
+                   , "../anonymized/all-ideas", "../anonymized/all-ml-week12", "../anonymized/all-resources"
+                   , "../anonymized/all-technical-support", "../anonymized/all-web3-week12", "../anonymized/all-week1"
+                   , "../anonymized/all-week2", "../anonymized/all-week3", "../anonymized/all-week4"
+                   , "../anonymized/all-week5", "../anonymized/all-week6", "../anonymized/all-week7"
+                   , "../anonymized/all-week8", "../anonymized/all-week9", "../anonymized/all-week10"
+                   , "../anonymized/all-week11", "../anonymized/all-week12", "../anonymized/batch6_week4_studygroup"
+                   , "../anonymized/chang-w11", "../anonymized/data-engineering", "../anonymized/dsa-sql"
+                   , "../anonymized/gokada-challenge-presentation", "../anonymized/happy-new-year-study-group"
+                   , "../anonymized/kafka_de", "../anonymized/machine-learning", "../anonymized/random"
+                   , "../anonymized/study-group", "../anonymized/team-10", "../anonymized/tenx-bot"
+                   , "../anonymized/week2-group", "../anonymized/week-2-group-8", "../anonymized/week4-teamwork"
+                   , "../anonymized/week-11-group4"]
+    all_message_dataframes = []
+    for folder in all_folders:
+        all_message_dataframes.append(slack_parser(folder))
+    return pd.concat(all_message_dataframes)
+
+
+def test():
+    return ("yeet")
+
+
+# print(all_messages())
+# print(all_messages())
+# print(slack_parser("anonymized/all-broadcast"))
 
 
 def parse_slack_reaction(path, channel):
