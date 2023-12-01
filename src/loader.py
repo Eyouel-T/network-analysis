@@ -101,7 +101,6 @@ def slack_parser(path_channel):
         6. reset the index and return dataframe
     """
 
-    print(f"slack_parser called with argument: {path_channel} ")
     # specify path to get json files
     # print(glob.glob(f"{path_channel}/*.json"))
     combined = []
